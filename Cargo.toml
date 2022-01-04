@@ -1,9 +1,9 @@
 [package]
 name = "mkscratch"
-version = "0.0.0"
+version = "1.0.0"
 authors = ["McKayla Washburn <mckayla@hey.com>"]
 description = "Make a .scratch directory to keep random scribbles in"
-keywords = ["git", "scratch paper"]
+keywords = ["git", "scratch", "temp"]
 license = "MIT"
 homepage = "https://github.com/aslilac/mkscratch"
 repository = "https://github.com/aslilac/mkscratch"
