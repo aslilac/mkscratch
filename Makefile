@@ -1,2 +1,2 @@
 clean:
-	rm -rf ./.scratch/
+	rm -r ./.scratch/

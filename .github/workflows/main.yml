@@ -1,25 +1,62 @@
 name: main
 
 on:
-    push:
-        branches: [main]
-    pull_request:
-        branches: [main]
+  push:
+    branches: ["main"]
+  pull_request:
+    branches: ["**"]
+
+concurrency:
+  group: main-${{ github.ref }}
+  cancel-in-progress: true
 
 jobs:
-    build:
-        runs-on: ubuntu-latest
+  test:
+    runs-on: ubuntu-latest
 
-        strategy:
-            matrix:
-                rust-version: [stable, beta, nightly]
-            fail-fast: false
+    strategy:
+      matrix:
+        rust-version: [stable, beta, nightly]
+      fail-fast: false
 
-        continue-on-error: ${{ matrix.rust-version == 'nightly' }}
+    steps:
+      - uses: actions/checkout@v3
 
-        steps:
-            - uses: actions/checkout@v2
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: ${{ matrix.rust-version }}
+          default: true
 
-            - run: cargo fmt -- --check
-              if: matrix.rust-version == 'stable'
-            - run: cargo clippy
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+            ./build/
+          key: test-cargo-${{matrix.rust-version}}-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: test-cargo-${{matrix.rust-version}}-
+
+      - run: cargo test
+
+  lint:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v3
+
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable
+          components: clippy, rustfmt
+          default: true
+
+      - uses: actions/cache@v3
+        with:
+          path: |
+            ~/.cargo/
+            ./build/
+          key: lint-cargo-${{ hashFiles('**/Cargo.lock') }}
+          restore-keys: lint-cargo-
+
+      - run: cargo fmt -- --check
+
+      - run: cargo clippy

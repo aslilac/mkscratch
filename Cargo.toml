@@ -7,5 +7,8 @@ keywords = ["git", "scratch", "temp"]
 license = "MIT"
 homepage = "https://github.com/aslilac/mkscratch"
 repository = "https://github.com/aslilac/mkscratch"
-documentation = "https://docs.rs/crate/mkscratch"
 edition = "2021"
+
+[dependencies]
+anyhow = "1.0.66"
+colored = "2.0.0"
